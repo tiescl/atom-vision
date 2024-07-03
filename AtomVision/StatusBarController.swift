@@ -20,13 +20,9 @@ class StatusBarController {
         statusItem = statusBar.statusItem(withLength: 30);
         
         if let button = statusItem.button {
-            
             button.image = NSImage(systemSymbolName: "atom", accessibilityDescription: "atom symbol");
-            
             button.action = #selector(showApp(sender:))
-            
             button.target = self
-            
         }
         
     }

@@ -20,5 +20,6 @@ struct AtomVisionApp: App {
         WindowGroup {
             EmptyView()
         }
+        
     }
 }

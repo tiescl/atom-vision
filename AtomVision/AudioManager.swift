@@ -20,7 +20,6 @@ class AudioManager {
             player = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: soundUrl!));
             
             player?.prepareToPlay();
-            
             player?.play();
             
         } catch {

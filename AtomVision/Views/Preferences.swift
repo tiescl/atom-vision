@@ -17,7 +17,6 @@ struct Preferences: View {
                 List(selection: $selection) {
                     
                     NavigationLink("General", value: "general")
-                    
                     NavigationLink("Appearance", value: "appearance")
                     
                 }
@@ -27,15 +26,9 @@ struct Preferences: View {
             }, detail: {
                 
                 if selection == "general" {
-                    
                     General()
-                        .navigationSplitViewColumnWidth(min: 520, ideal: 520)
-                    
                 } else {
-                    
                     Appearance()
-                        .navigationSplitViewColumnWidth(min: 520, ideal: 520)
-                    
                 }
                 
             }

@@ -15,9 +15,7 @@ class PreferencesController: NSWindowController, NSWindowDelegate {
     private var newWindow: NSWindow?
     
     override func windowDidLoad() {
-        
         super.windowDidLoad()
-        
     }
     
     func showWindow() {
@@ -41,20 +39,16 @@ class PreferencesController: NSWindowController, NSWindowDelegate {
     private func createNewWindow(controller: PreferencesController) {
         
         let window = NSWindow(
-            contentRect: NSRect(x: 400, y: 400, width: 400, height: 350),
+            contentRect: NSRect(x: 400, y: 400, width: 680, height: 350),
             styleMask: [.closable, .miniaturizable, .fullSizeContentView, .titled],
             backing: .buffered,
             defer: false
         )
         
         window.delegate = controller
-        
         window.isReleasedWhenClosed = false;
-        
         window.title = "AtomVision Preferences"
-        
         window.contentView = NSHostingView(rootView: Preferences())
-        
         window.makeKeyAndOrderFront(controller);
         
         newWindow = window;
@@ -62,9 +56,7 @@ class PreferencesController: NSWindowController, NSWindowDelegate {
     }
     
     func windowShouldClose(_ window: NSWindow) -> Bool {
-        
         return true;
-        
     }
     
 }

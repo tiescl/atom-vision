@@ -24,16 +24,13 @@ struct Appearance: View {
                     HStack {
                         
                         Text("Timer Color")
-                        
                         Spacer()
                         
                     }
                     
                 })
                 .onChange(of: timerColor) { _, newValue in
-                    
                     timerColorHex = newValue.toHex() ?? "FFFFFF"
-                    
                 }
                 
             }
@@ -43,9 +40,7 @@ struct Appearance: View {
             
         }
         .onAppear {
-            
             timerColor = Color(hex: timerColorHex) ?? .white
-            
         }
         
     }
@@ -54,11 +49,6 @@ struct Appearance: View {
 #Preview {
     Appearance()
 }
-
-
-
-
-
 
 extension Color {
     
