@@ -58,7 +58,7 @@ struct PopoverView: View {
             
             if timeRemaining <= 0.0 {
                 
-                Text("0:00")
+                Text("\(Int(time)):00")
                 
             } else {
                 
@@ -86,9 +86,25 @@ struct PopoverView: View {
                 Text(timeRemaining > 0.0 ? "Restart" : "Start")
                 
             })
-            .buttonStyle(.borderedProminent)
-            .padding(.bottom, 5)
+            
+            Spacer()
+            
+            Button(action: {
+                
+                timerController?.invalidate();
+                
+                timeRemaining = 0.0;
+                
+            }, label: {
+                
+                Text("Reset")
+                
+            })
+            
         }
+        .buttonStyle(.borderedProminent)
+        .padding(.bottom, 5)
+        .padding(.horizontal, 65)
     }
     
     var utilButtons: some View {
