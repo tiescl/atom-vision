@@ -15,7 +15,9 @@ struct PopoverView: View {
     
     @State private var startTime: Date = Date();
     @State private var timeRemaining: Double = 0.0;
-    @State private var timerIsRunning: Bool = false;
+    @State private var timerShouldChange: Bool = false;
+    
+    @State private var timerController: Timer?
     
     var time: Double {
         return Double(timerDurationText) ?? 30
@@ -35,12 +37,19 @@ struct PopoverView: View {
             utilButtons
             
         }
-        .onChange(of: timerIsRunning) {
-            if timerIsRunning {
-                startTimer()
-            }
+        .onChange(of: timerShouldChange) {
+            timeRemaining = time * 60.0;
+            startTime = Date();
+            startTimer()
         }
-        
+        .onChange(of: timerDurationText) {
+            timerController?.invalidate();
+            
+            startTime = Date();
+            timeRemaining = time * 60.0;
+            
+            startTimer();
+        }
     }
     
     var timer: some View {
@@ -69,9 +78,8 @@ struct PopoverView: View {
             
             Button(action: {
                 
-                startTime = Date();
-                timeRemaining = time * 60;
-                timerIsRunning = true;
+                timerController?.invalidate();
+                timerShouldChange.toggle();
                 
             }, label: {
                 
@@ -122,7 +130,7 @@ struct PopoverView: View {
         
         guard timeRemaining > 0.0 else { return }
         
-        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+        timerController = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
             
             timeRemaining -= 1.0
             
@@ -132,7 +140,7 @@ struct PopoverView: View {
                 
                 audioManager.playSound()
                 
-                timerIsRunning = false;
+                timerShouldChange.toggle();
                 
             }
             
