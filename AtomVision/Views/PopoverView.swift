@@ -49,7 +49,7 @@ struct PopoverView: View {
             if timeRemaining <= 0.0 {
                 Text("\(Int(time)):00")
             } else {
-                Text(startTime.addingTimeInterval(TimeInterval(time * 60 + 1)), style: .timer)
+                Text(startTime.addingTimeInterval(TimeInterval(time * 60)), style: .timer)
             }
             
         }
@@ -114,11 +114,15 @@ struct PopoverView: View {
     }
     
     func startTimer() {
-        guard timeRemaining > 0.0 else { return }
+        guard timeRemaining > 0.0 else {
+            timerController?.invalidate();
+            return;
+        }
         
         timerController = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-            timeRemaining -= 1.0
-            if timeRemaining <= 0.0 {
+            timeRemaining -= 1.0;
+            
+            if timeRemaining == 0.0 {
                 audioManager.playSound();
                 timer.invalidate();
             }
