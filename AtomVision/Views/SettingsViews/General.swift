@@ -10,7 +10,8 @@ import SwiftUI
 struct General: View {
     
     @AppStorage("timerDurationText") private var timerDurationText: String = "30"
-    
+    @AppStorage("betaFeatures") private var betaFeatures: Bool = false
+
     @State private var timerDurationSlider: Double = 30.0
     
     @State private var launchOnStart: Bool = false
@@ -38,7 +39,7 @@ struct General: View {
                         .padding(.bottom, 20)
                         .padding(.top)
                     
-                    defaultToggles
+                    betaToggles
                     
                 }
                 .padding(.horizontal)
@@ -60,7 +61,7 @@ struct General: View {
             
             Spacer()
             
-            Text("0.0.1")
+            Text("0.4.3")
             
         }
         .padding(.horizontal)
@@ -70,9 +71,20 @@ struct General: View {
         
     }
     
-    var defaultToggles: some View {
+    var betaToggles: some View {
         
         Group {
+            
+            Toggle(isOn: $betaFeatures) {
+                
+                HStack {
+                    
+                    Text("Toggle Beta Features")
+                    Spacer()
+                    
+                }
+                
+            }.padding(.bottom)
             
             Toggle(isOn: $launchOnStart) {
                 
@@ -84,6 +96,7 @@ struct General: View {
                 }
                 
             }
+            .disabled(betaFeatures == false)
             
             Toggle(isOn: $automaticUpdates) {
                 
@@ -95,7 +108,8 @@ struct General: View {
                 }
                 
             }
-            
+            .disabled(betaFeatures == false)
+
         }
         
     }
