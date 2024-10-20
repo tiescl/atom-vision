@@ -10,16 +10,13 @@ import SwiftUI
 @main
 struct AtomVisionApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+
     var body: some Scene {
-        
         Window("Preferences", id: "preferences") {
             Preferences()
         }
-        
         WindowGroup {
             EmptyView()
         }
-        
     }
 }
