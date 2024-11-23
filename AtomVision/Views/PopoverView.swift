@@ -11,34 +11,37 @@ struct PopoverView: View {
     @Environment(\.openWindow) private var openWindow
 
     @AppStorage("timerDurationText") private var timerDurationText: String = "30"
-    @AppStorage("timerColor") private var timerColorHex: String = Color.white.toHex() ?? "FFFFFF"
+    @AppStorage("timerColor") private var timerColorHex: String = "FFFFFF"
+    
+    var appState: AppDelegate
+    var zenState: ZenState {
+        return appState.zenState
+    }
 
     @State private var startTime: Date = Date()
     @State private var timeRemaining: Double = 0.0
     @State private var timerController: Timer?
-    @State private var zenState = ZenState.Focus
 
-    private let BREAK_TIME = 5.0
     private let MIN_IN_SEC = 60.0
 
+    var breakTime: Double = 5.0
+    var lazyTime: Double = 0.0
     var focusTime: Double {
         return Double(timerDurationText) ?? 30
     }
-
+    
     let audioManager = AudioManager()
 
     var body: some View {
         VStack {
+            zenStateReflector
             timer
             timeControlButtons
             Divider()
             utilButtons
         }
-        .onChange(of: timerDurationText) {
-            timerController?.invalidate()
-            timeRemaining = focusTime * MIN_IN_SEC
-            startTime = Date()
-            startTimer()
+        .onChange(of: focusTime) {
+            prepareTimer(for: .Focus)
         }
     }
 
@@ -48,7 +51,7 @@ struct PopoverView: View {
                 Text("\(Int(focusTime)):00")
             } else {
                 let interval = TimeInterval(
-                    (zenState == .Focus ? focusTime : BREAK_TIME) * MIN_IN_SEC
+                    (zenState == .Focus ? focusTime : breakTime) * MIN_IN_SEC
                 )
                 Text(
                     startTime.addingTimeInterval(interval),
@@ -57,8 +60,8 @@ struct PopoverView: View {
             }
         }
         .font(.system(size: 70))
-        .padding(.vertical, 7)
         .foregroundStyle(Color(hex: timerColorHex) ?? .white)
+        .padding(.vertical, -10)
     }
 
     var timeControlButtons: some View {
@@ -66,24 +69,16 @@ struct PopoverView: View {
             HStack {
                 Button(
                     action: {
-                        timerController?.invalidate()
-                        zenState = .Break
-                        timeRemaining = BREAK_TIME * MIN_IN_SEC
-                        startTime = Date()
-                        startTimer()
+                        prepareTimer(for: .Break)
                     },
                     label: {
-                        Text("Start 5")
+                        Text("Start \(Int(breakTime))")
                     }
                 )
                 Spacer()
                 Button(
                     action: {
-                        timerController?.invalidate()
-                        zenState = .Focus
-                        timeRemaining = focusTime * MIN_IN_SEC
-                        startTime = Date()
-                        startTimer()
+                        prepareTimer(for: .Focus)
                     },
                     label: {
                         Text("Start \(Int(focusTime))")
@@ -94,8 +89,7 @@ struct PopoverView: View {
 
             Button(
                 action: {
-                    timeRemaining = 0.0
-                    timerController?.invalidate()
+                    prepareTimer(for: .Lazy)
                 },
                 label: {
                     Text("Reset")
@@ -105,6 +99,7 @@ struct PopoverView: View {
         }
         .buttonStyle(.borderedProminent)
         .padding(.bottom, 5)
+        .padding(.top, 10)
     }
 
     var utilButtons: some View {
@@ -141,7 +136,39 @@ struct PopoverView: View {
         )
         .buttonStyle(.borderless)
     }
-
+    
+    var zenStateReflector: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 5.0)
+                .stroke(lineWidth: 1.0)
+            Text("\(zenState)").font(.title3)
+        }
+        .foregroundStyle(Color(hex: timerColorHex) ?? .orange)
+        .frame(width: 55.0, height: 25.0)
+        .padding(.top, 10)
+    }
+    
+    func prepareTimer(for futureZenState: ZenState) {
+        timerController?.invalidate()
+        
+        appState.zenState = futureZenState
+        var duration: Double
+        switch futureZenState {
+            case .Break:
+                duration = breakTime
+            case .Focus:
+                duration = focusTime
+            default:
+                duration = lazyTime
+        }
+        timeRemaining = duration * MIN_IN_SEC
+        startTime = Date()
+        
+        if duration > 0.0 {
+            startTimer()
+        }
+    }
+    
     func startTimer() {
         guard timeRemaining > 0.0 else {
             timerController?.invalidate()
@@ -159,7 +186,4 @@ struct PopoverView: View {
     }
 }
 
-enum ZenState {
-    case Focus
-    case Break
-}
+

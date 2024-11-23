@@ -7,6 +7,7 @@
 
 import AppKit
 import SwiftUI
+import CoreGraphics
 
 class PreferencesController: NSWindowController, NSWindowDelegate {
     static let shared = PreferencesController()
