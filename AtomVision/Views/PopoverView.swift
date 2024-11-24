@@ -171,8 +171,7 @@ struct PopoverView: View {
     
     func startTimer() {
         guard timeRemaining > 0.0 else {
-            timerController?.invalidate()
-            return
+            return prepareTimer(for: .Lazy)
         }
 
         timerController = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
@@ -181,6 +180,7 @@ struct PopoverView: View {
             if timeRemaining == 0.0 {
                 audioManager.playSound()
                 timer.invalidate()
+                appState.zenState = .Lazy
             }
         }
     }

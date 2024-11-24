@@ -44,7 +44,7 @@ struct General: View {
         HStack {
             Text("Current version")
             Spacer()
-            Text("0.5.0")
+            Text("0.5.1")
         }
         .padding(.horizontal)
         .padding(.vertical, 8)
